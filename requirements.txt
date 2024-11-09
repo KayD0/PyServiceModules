@@ -1,0 +1,20 @@
+# AWS Lambda用のランタイムインターフェイスクライアント。AWS Lambda関数の実行に必要
+awslambdaric 
+# 数値積分、最適化、線形代数、統計など
+scipy==1.*
+# Httpリクエスト用
+requests==2.*
+# OpenAIのAPIを使用するためのクライアントライブラリ
+openai==1.*
+# Google Cloud Storageとの連携
+google-cloud-storage==2.*
+# AWSのPython SDKです。AWS上のサービス（S3、EC2など）とのやり取りに使用
+boto3==1.*
+# boto3の低レベルのコアライブラリ
+botocore==1.*
+# 大規模言語モデル（LLM）を使用したデータインデックス作成と検索
+llama-index==0.*
+# Hugging Faceのtransformersライブラリを使用して、ローカルで動作する言語モデルをLlamaIndexと統合
+llama-index-llms-huggingface
+# Hugging FaceのInference APIを使用して、クラウドでホストされている言語モデルにアクセスする
+llama-index-llms-huggingface-api
