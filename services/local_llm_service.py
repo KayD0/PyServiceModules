@@ -1,4 +1,4 @@
-from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageContext, PromptTemplate, ServiceContext
+from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageContext, PromptTemplate, ServiceContext, Settings
 from llama_index.core.base.embeddings.base import BaseEmbedding
 from llama_index.core.vector_stores import SimpleVectorStore
 from llama_index.embeddings.openai import OpenAIEmbedding
@@ -7,7 +7,11 @@ from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
 class LocalLlmService:
     def __init__(self):
-        self.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
+        # HuggingFaceEmbeddingモデルの初期化
+        # ServiceContextの作成と埋め込みモデルの設定
+        embed_model  = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
+        Settings.embed_model = embed_model
+        self.embed_model = embed_model
         self.vector_store = SimpleVectorStore(stores_text=True)
         self.index = None
         # 会社のQAボット用のプロンプトテンプレートを定義
@@ -25,6 +29,32 @@ class LocalLlmService:
             "5. 質問の意図が不明確な場合は、丁寧に確認を求めてください。\n"
             "それでは、質問にお答えください：\n"
         )
+
+    """
+    QAデータ（質問と回答のペア）を埋め込み（ベクトル形式）に変換するメソッド。
+    :param qa_data: 質問と回答のペアのリスト。各要素は { question, answer } の辞書。
+    :param dimensions: 生成する埋め込みベクトルの次元数。デフォルトは384。
+    :return: 埋め込みデータを含むリスト。各質問が埋め込みベクトルとともに保存される。
+    """
+    def generate_embeddings(self, qa_data):
+        embeddings = []
+
+        for item in qa_data:
+            question = item['question']
+            answer = item['answer']
+
+            # 質問のベクトル化
+            question_embedding = self.embed_model.get_text_embedding(
+                question
+            )
+
+            embeddings.append({
+                'question': question,
+                'answer': answer,
+                'embedding': question_embedding
+            })
+
+        return embeddings
 
     """
     埋め込みベクトルをインデックスに追加する

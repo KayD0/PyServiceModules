@@ -27,7 +27,7 @@ class OpenAiService:
     :param qa_data: 質問と回答のペアのリスト。各要素は { question, answer } の辞書。
     :return: 埋め込みデータを含むリスト。各質問が埋め込みベクトルとともに保存される。
     """
-    def generate_embeddings(self, qa_data):
+    def generate_embeddings(self, qa_data, dimensions=384):
         embeddings = []
 
         for item in qa_data:
@@ -36,7 +36,8 @@ class OpenAiService:
 
             response = self.client.embeddings.create(
                 model="text-embedding-ada-002",
-                input=question
+                input=question,
+                dimensions=dimensions
             )
 
             embeddings.append({

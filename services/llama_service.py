@@ -24,6 +24,32 @@ class LlamaService:
             "それでは、質問にお答えください：\n"
         )
 
+
+    """
+    QAデータ（質問と回答のペア）を埋め込み（ベクトル形式）に変換するメソッド。
+    :param qa_data: 質問と回答のペアのリスト。各要素は { question, answer } の辞書。
+    :return: 埋め込みデータを含むリスト。各質問が埋め込みベクトルとともに保存される。
+    """
+    def generate_embeddings(self, qa_data):
+        embeddings = []
+
+        for item in qa_data:
+            question = item['question']
+            answer = item['answer']
+
+            # 質問のベクトル化
+            question_embedding = self.embed_model.get_text_embedding(
+                question
+            )
+
+            embeddings.append({
+                'question': question,
+                'answer': answer,
+                'embedding': question_embedding
+            })
+
+        return embeddings
+
     """
     埋め込みベクトルをインデックスに追加する
     :param embeddings: 追加する埋め込みベクトルのリスト。各要素は'answer'と'embedding'キーを持つ辞書

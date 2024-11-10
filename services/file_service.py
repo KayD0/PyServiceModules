@@ -31,3 +31,28 @@ class FileService:
         except Exception as e:
             print(f"Error reading file: {e}")
             raise RuntimeError('Error reading JSON file')
+        
+    """
+    JSONデータをローカルファイルシステムに書き込む
+    :param data: 書き込むJSONデータ
+    :param path: ファイルを保存するディレクトリのパス
+    :param file_name: 保存するファイル名
+    :param encoding: ファイルのエンコーディング（デフォルトはUTF-8）
+    :param indent: JSONの整形時のインデント（デフォルトは4）
+    """
+    def write_json_to_file(self, data, path, file_name, encoding='utf-8', indent=4):
+        try:
+            # フルパスの生成
+            file_path = os.path.join(self.root_dir, path, file_name)
+            
+            # ディレクトリが存在しない場合は作成
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            
+            # JSONデータをファイルに書き込む
+            with open(file_path, 'w', encoding=encoding) as file:
+                json.dump(data, file, ensure_ascii=False, indent=indent)
+            
+            print(f"JSON data successfully written to: {file_path}")
+        except Exception as e:
+            print(f"Error writing JSON to file: {e}")
+            raise RuntimeError('Error writing JSON file')
